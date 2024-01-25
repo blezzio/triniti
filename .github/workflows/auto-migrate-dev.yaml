@@ -1,0 +1,24 @@
+name: Auto migrate database
+
+on:
+    workflow_run:
+        workflows: [Test database migration]
+        branches: [dev]
+        types:
+            - completed
+
+jobs:
+  go-migrate:
+    name: migration-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: 'go.mod'
+          cache: false
+      - name: install golang-migrate
+        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+      - name: run migrate on local container
+        run: migrate -source file://migrations -database ${{ secrets.POSTGRES_CONNECTION_STRING_DEV }} up
+        

@@ -1,0 +1,29 @@
+name: Test database migration
+
+on:
+    push:
+        branches: [master, dev]
+        paths: 
+            - "migrations/**"
+    pull_request:
+        types: [opened, reopened]
+        paths:
+            - "migrations/**"
+
+jobs:
+  go-migrate:
+    name: migration-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run docker compose
+        run: docker compose up -d
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: 'go.mod'
+          cache: false
+      - name: Install golang-migrate
+        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+      - name: Run migrate on local container
+        run: migrate -source file://migrations -database "postgres://postgres:password@localhost:5432/postgres?sslmode=disable" up
+        
