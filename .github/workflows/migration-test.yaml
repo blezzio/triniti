@@ -25,5 +25,5 @@ jobs:
       - name: run docker compose
         run: docker compose up -d
       - name: run migrate on local container
-        run: migrate -source file://migrations -database postgres://localhost:5432/database?sslmode=disable up
+        run: migrate -source file://migrations -database "postgres://postgres:password@localhost:5432/postgres?sslmode=disable" up
         
