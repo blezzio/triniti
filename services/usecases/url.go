@@ -29,7 +29,9 @@ func NewURL(
 
 func (uc *URL) GetHash(ctx context.Context, fullURL string) (string, error) {
 	hash, err := uc.createNewHash(ctx, fullURL)
-	uc.addNewHashToCache(ctx, hash, fullURL)
+	if err := uc.setCache(ctx, hash, fullURL); err != nil {
+		uc.logger.WarnContext(ctx, "failed to set cache with key=%s and value=%s", hash, fullURL)
+	}
 	return hash, utils.Trace(err, "failed to get hash for url %s", fullURL)
 }
 
@@ -52,12 +54,6 @@ func (uc *URL) createNewHash(ctx context.Context, fullURL string) (string, error
 	})
 
 	return hash, utils.Trace(err, "failed to create hash for url %s", fullURL)
-}
-
-func (uc *URL) addNewHashToCache(ctx context.Context, hash, fullURL string) {
-	if err := uc.setCache(ctx, hash, fullURL); err != nil {
-		uc.logger.WarnContext(ctx, "failed to set cache with key=%s and value=%s", hash, fullURL)
-	}
 }
 
 func (uc *URL) getCache(ctx context.Context, key string) (string, error) {

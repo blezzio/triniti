@@ -43,19 +43,6 @@ func (r *URL) GetFullURL(ctx context.Context, hash string) (string, error) {
 	return res, utils.Trace(err, "failed to scan row")
 }
 
-const getHashQuery string = `SELECT "hash" FROM "url_lookup" WHERE "hash" = ?`
-
-func (r *URL) GetHash(ctx context.Context, fullURL string) (string, error) {
-	row := r.db.QueryRowContext(ctx, getHashQuery, fullURL)
-	if row.Err() != nil {
-		return "", utils.Trace(row.Err(), "failed to query for hash of url %s", fullURL)
-	}
-
-	var res string
-	err := row.Scan(&res)
-	return res, utils.Trace(err, "failed to scan row")
-}
-
 const deleteQuery string = `DELETE FROM "url_lookup" WHERE "hash" = ? OR "url" = ?`
 
 func (r *URL) Delete(ctx context.Context, hashOrFullURL string) error {
