@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/blezzio/tini/data/interfaces"
-	"github.com/blezzio/tini/services/dtos"
-	"github.com/blezzio/tini/utils"
+	"github.com/blezzio/triniti/data/interfaces"
+	"github.com/blezzio/triniti/services/dtos"
+	"github.com/blezzio/triniti/utils"
 )
 
 type URL struct {

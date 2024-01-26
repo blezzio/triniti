@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/blezzio/tini/services/dtos"
-	"github.com/blezzio/tini/services/interfaces"
-	"github.com/blezzio/tini/utils"
+	"github.com/blezzio/triniti/services/dtos"
+	"github.com/blezzio/triniti/services/interfaces"
+	"github.com/blezzio/triniti/utils"
 )
 
 type URL struct {

@@ -1,6 +1,6 @@
 package usecases
 
-import "github.com/blezzio/tini/services/interfaces"
+import "github.com/blezzio/triniti/services/interfaces"
 
 type URLOpt func(*URL)
 

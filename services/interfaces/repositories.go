@@ -3,7 +3,7 @@ package interfaces
 import (
 	"context"
 
-	"github.com/blezzio/tini/services/dtos"
+	"github.com/blezzio/triniti/services/dtos"
 )
 
 type URLRepo interface {
