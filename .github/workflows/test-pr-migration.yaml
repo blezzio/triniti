@@ -1,7 +1,6 @@
 name: golang-migrate-pr
 on:
     pull_request:
-        types: [opened, reopened]
         paths:
             - "migrations/**"
 

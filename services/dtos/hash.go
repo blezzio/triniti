@@ -2,19 +2,19 @@ package dtos
 
 import "github.com/blezzio/triniti/services/consts"
 
-type Hash struct {
+type HashGetter struct {
 	val     string
 	maxlen  int
 	minlen  int
 	currlen int
 }
 
-func NewHash(val string) *Hash {
+func NewHashGetter(val string) *HashGetter {
 	maxlen := len(val)
 	if consts.MaxHashLen < maxlen {
 		maxlen = consts.MaxHashLen
 	}
-	return &Hash{
+	return &HashGetter{
 		val:     val,
 		maxlen:  maxlen,
 		minlen:  consts.MinHashLen,
@@ -22,7 +22,7 @@ func NewHash(val string) *Hash {
 	}
 }
 
-func (dto *Hash) Next() string {
+func (dto *HashGetter) Get() string {
 	currlen := dto.currlen
 	if dto.maxlen < currlen {
 		currlen = dto.maxlen
@@ -33,6 +33,6 @@ func (dto *Hash) Next() string {
 	return val
 }
 
-func (dto *Hash) Done() bool {
+func (dto *HashGetter) Done() bool {
 	return dto.currlen > dto.maxlen
 }

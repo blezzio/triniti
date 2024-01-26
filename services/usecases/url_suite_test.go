@@ -10,6 +10,7 @@ type urlTestSuiteParam struct {
 	withLogger        bool
 	repoData          map[string]string
 	cacheData         map[string]string
+	hasherResult      string
 	repoErr, cacheErr error
 }
 
@@ -53,7 +54,13 @@ func getURLTestSuite(param urlTestSuiteParam) urlTestSuite {
 	}
 
 	repo := mocks.NewUrlTestRepo(param.repoData, param.repoErr)
-	hash := mocks.NewURLTestHash()
+
+	hasherResult := "abcdef"
+	if len(param.hasherResult) != 0 {
+		hasherResult = param.hasherResult
+	}
+	hash := mocks.NewURLTestHash(hasherResult)
+
 	uc := NewURL(repo, hash, opts...)
 
 	suite.repoCallLog = repo

@@ -9,7 +9,7 @@ import (
 func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 	const tcname string = "Test_URLUseCase_GetHash_Successfull"
 	// BEGIN: have pre-existing hash in cache
-	suite := getURLTestSuite(urlTestSuiteParam{withCache: true, cacheData: map[string]string{"https://triniti.blezz.io": "abcdef"}, withLogger: true})
+	suite := getURLTestSuite(urlTestSuiteParam{withCache: true, cacheData: map[string]string{"abcdef": "https://triniti.blezz.io"}, withLogger: true})
 	hash, err := suite.uc.GetHash(context.Background(), "https://triniti.blezz.io")
 	if err != nil {
 		t.Errorf("%s err=%v, expected nil", tcname, err)
@@ -22,12 +22,6 @@ func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 	expectedCacheGetCalled := 1
 	if actualCacheGetCalled != expectedCacheGetCalled {
 		t.Errorf("%s cache_get_call=%d, expected %d", tcname, actualCacheGetCalled, expectedCacheGetCalled)
-	}
-
-	actualGetHashCalled, _ := suite.repoCallLog.Called(suite.uc.repo.GetHash)
-	expectedGetHashCalled := 0
-	if actualGetHashCalled != expectedGetHashCalled {
-		t.Errorf("%s get_hash_call=%d, expected %d", tcname, actualGetHashCalled, expectedGetHashCalled)
 	}
 
 	actualCreateCalled, _ := suite.repoCallLog.Called(suite.uc.repo.Create)
@@ -53,12 +47,6 @@ func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 		t.Errorf("%s cache_get_call=%d, expected %d", tcname, actualCacheGetCalled, expectedCacheGetCalled)
 	}
 
-	actualGetHashCalled, _ = suite.repoCallLog.Called(suite.uc.repo.GetHash)
-	expectedGetHashCalled = 1
-	if actualGetHashCalled != expectedGetHashCalled {
-		t.Errorf("%s get_hash_call=%d, expected %d", tcname, actualGetHashCalled, expectedGetHashCalled)
-	}
-
 	actualCreateCalled, _ = suite.repoCallLog.Called(suite.uc.repo.Create)
 	expectedCreateCalled = 1
 	if actualCreateCalled != expectedCreateCalled {
@@ -74,12 +62,6 @@ func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 	}
 	if hash == "" {
 		t.Errorf("%s hash=%s, expected non-empty", tcname, hash)
-	}
-
-	actualGetHashCalled, _ = suite.repoCallLog.Called(suite.uc.repo.GetHash)
-	expectedGetHashCalled = 1
-	if actualGetHashCalled != expectedGetHashCalled {
-		t.Errorf("%s get_hash_call=%d, expected %d", tcname, actualGetHashCalled, expectedGetHashCalled)
 	}
 
 	actualCreateCalled, _ = suite.repoCallLog.Called(suite.uc.repo.Create)
