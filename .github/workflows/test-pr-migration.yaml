@@ -1,18 +1,13 @@
-name: Test database migration
-
+name: golang-migrate-pr
 on:
-    push:
-        branches: [master, dev]
-        paths: 
-            - "migrations/**"
     pull_request:
         types: [opened, reopened]
         paths:
             - "migrations/**"
 
 jobs:
-  go-migrate:
-    name: migration-test
+  test:
+    name: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
