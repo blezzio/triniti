@@ -87,11 +87,8 @@ func (uc *URL) GetFullURL(ctx context.Context, hash string) (string, error) {
 		return "", utils.Trace(err, "failed to get full url for hash %s", hash)
 	}
 
-	if cacheErr == nil {
-		if err := uc.setCache(ctx, hash, fullURL); err != nil {
-			uc.logger.WarnContext(ctx, "failed to set cache", "key", hash, "value", fullURL, "error", err)
-		}
+	if err := uc.setCache(ctx, hash, fullURL); err != nil {
+		uc.logger.WarnContext(ctx, "failed to set cache", "key", hash, "value", fullURL, "error", err)
 	}
-
 	return fullURL, nil
 }
