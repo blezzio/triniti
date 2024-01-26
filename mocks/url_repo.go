@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/blezzio/tini/services/dtos"
+	"github.com/blezzio/triniti/services/dtos"
 )
 
 type URLTestRepo struct {

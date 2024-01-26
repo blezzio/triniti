@@ -9,8 +9,8 @@ import (
 func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 	const tcname string = "Test_URLUseCase_GetHash_Successfull"
 	// BEGIN: have pre-existing hash in cache
-	suite := getURLTestSuite(urlTestSuiteParam{withCache: true, cacheData: map[string]string{"https://tini.blezz.io": "abcdef"}, withLogger: true})
-	hash, err := suite.uc.GetHash(context.Background(), "https://tini.blezz.io")
+	suite := getURLTestSuite(urlTestSuiteParam{withCache: true, cacheData: map[string]string{"https://triniti.blezz.io": "abcdef"}, withLogger: true})
+	hash, err := suite.uc.GetHash(context.Background(), "https://triniti.blezz.io")
 	if err != nil {
 		t.Errorf("%s err=%v, expected nil", tcname, err)
 	}
@@ -39,7 +39,7 @@ func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 
 	// START: have no pre-existing hash
 	suite = getURLTestSuite(urlTestSuiteParam{withCache: true, withLogger: true})
-	hash, err = suite.uc.GetHash(context.Background(), "https://tini.blezz.io")
+	hash, err = suite.uc.GetHash(context.Background(), "https://triniti.blezz.io")
 	if err != nil {
 		t.Errorf("%s err=%v, expected nil", tcname, err)
 	}
@@ -68,7 +68,7 @@ func Test_URLUseCase_GetHash_Successfull(t *testing.T) {
 
 	// BEGIN: have no pre-existing and no cache
 	suite = getURLTestSuite(urlTestSuiteParam{withCache: false, withLogger: true})
-	hash, err = suite.uc.GetHash(context.Background(), "https://tini.blezz.io")
+	hash, err = suite.uc.GetHash(context.Background(), "https://triniti.blezz.io")
 	if err != nil {
 		t.Errorf("%s err=%v, expected nil", tcname, err)
 	}
@@ -111,7 +111,7 @@ func Test_URLUseCase_GetHash_Failed(t *testing.T) {
 func Test_URLUseCase_GetFullURL_Successfull(t *testing.T) {
 	const tcname string = "Test_URLUseCase_GetFullURL_Successfull"
 	// BEGIN: have full url in cache
-	suite := getURLTestSuite(urlTestSuiteParam{withCache: true, cacheData: map[string]string{"abcdef": "https://tini.blezz.io"}, withLogger: true})
+	suite := getURLTestSuite(urlTestSuiteParam{withCache: true, cacheData: map[string]string{"abcdef": "https://triniti.blezz.io"}, withLogger: true})
 	fullURL, err := suite.uc.GetFullURL(context.Background(), "abcdef")
 	if err != nil {
 		t.Errorf("%s err=%v, expected nil", tcname, err)
@@ -134,7 +134,7 @@ func Test_URLUseCase_GetFullURL_Successfull(t *testing.T) {
 	// END: have full url in cache
 
 	// BEGIN: no full url in cache
-	suite = getURLTestSuite(urlTestSuiteParam{withCache: true, repoData: map[string]string{"abcdef": "https://tini.blezz.io"}, withLogger: true})
+	suite = getURLTestSuite(urlTestSuiteParam{withCache: true, repoData: map[string]string{"abcdef": "https://triniti.blezz.io"}, withLogger: true})
 	fullURL, err = suite.uc.GetFullURL(context.Background(), "abcdef")
 	if err != nil {
 		t.Errorf("%s err=%v, expected nil", tcname, err)
@@ -163,7 +163,7 @@ func Test_URLUseCase_GetFullURL_Successfull(t *testing.T) {
 	// END: no full url in cache
 
 	// BEGIN: no  cache
-	suite = getURLTestSuite(urlTestSuiteParam{withCache: false, repoData: map[string]string{"abcdef": "https://tini.blezz.io"}, withLogger: true})
+	suite = getURLTestSuite(urlTestSuiteParam{withCache: false, repoData: map[string]string{"abcdef": "https://triniti.blezz.io"}, withLogger: true})
 	fullURL, err = suite.uc.GetFullURL(context.Background(), "abcdef")
 	if err != nil {
 		t.Errorf("%v err=%v, expected nil", tcname, err)

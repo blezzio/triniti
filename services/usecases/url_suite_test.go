@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"github.com/blezzio/tini/mocks"
-	"github.com/blezzio/tini/services/interfaces"
+	"github.com/blezzio/triniti/mocks"
+	"github.com/blezzio/triniti/services/interfaces"
 )
 
 type urlTestSuiteParam struct {

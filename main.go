@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/blezzio/tini/utils"
+	"github.com/blezzio/triniti/utils"
 )
 
 func main() {
