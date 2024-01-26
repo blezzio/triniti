@@ -17,7 +17,7 @@ type URL struct {
 	cache  interfaces.Cache[string, string]
 }
 
-func NewUrl(
+func NewURL(
 	repo interfaces.URLRepo, hash interfaces.Hash, opts ...URLOpt,
 ) *URL {
 	uc := &URL{repo: repo, hash: hash, logger: slog.Default()}

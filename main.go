@@ -1,26 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"log/slog"
+	"os"
 
-	"github.com/blezzio/triniti/utils"
+	"github.com/blezzio/triniti/data/repositories"
+	"github.com/blezzio/triniti/infra"
+	"github.com/blezzio/triniti/services/usecases"
 )
 
 func main() {
-	call()
+	build()
 }
 
-func call() {
-	fmt.Printf("%v", utils.Trace(throw1(), "failed %d", 3))
-}
-func throw1() error {
-	return utils.Trace(throw2(), "failed 2")
-}
-
-func throw2() error {
-	return utils.Trace(throw3(), "failed 1")
-}
-
-func throw3() error {
-	return fmt.Errorf("root error")
+func build() {
+	conn, err := infra.NewPostgresConn()
+	if err != nil {
+		slog.Error("failed to create db with error: %v", err)
+		os.Exit(1)
+	}
+	repo := repositories.NewURL(conn)
+	_ = usecases.NewURL(repo, nil)
 }
