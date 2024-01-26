@@ -1,5 +1,7 @@
 package interfaces
 
+import "github.com/blezzio/triniti/services/dtos"
+
 type Hash interface {
-	Hash(string) string
+	Hash(string) *dtos.Hash
 }

@@ -37,12 +37,14 @@ func (uc *URL) GetHash(ctx context.Context, fullURL string) (string, error) {
 
 func (uc *URL) createNewHash(ctx context.Context, fullURL string) (string, error) {
 	hash := uc.hash.Hash(fullURL)
+	val := hash.Next()
+
 	err := uc.repo.Create(ctx, &dtos.CreateHash{
-		Hash:    hash,
+		Hash:    val,
 		FullURL: fullURL,
 	})
-	uc.addNewHashToCache(ctx, hash, fullURL)
-	return hash, utils.Trace(err, "failed to create hash for url %s", fullURL)
+	uc.addNewHashToCache(ctx, val, fullURL)
+	return val, utils.Trace(err, "failed to create hash for url %s", fullURL)
 }
 
 func (uc *URL) addNewHashToCache(ctx context.Context, hash, fullURL string) {

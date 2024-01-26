@@ -1,6 +1,8 @@
 // go:build mocks
 package mocks
 
+import "github.com/blezzio/triniti/services/dtos"
+
 type URLTestHash struct {
 	callLog
 }
@@ -14,7 +16,7 @@ func NewURLTestHash() *URLTestHash {
 	}
 }
 
-func (h *URLTestHash) Hash(val string) string {
+func (h *URLTestHash) Hash(val string) *dtos.Hash {
 	h.insertCallLog(val)
-	return "abcdef"
+	return dtos.NewHash("abcdef")
 }

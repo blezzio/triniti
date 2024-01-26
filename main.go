@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/sha512"
 	"log/slog"
 	"os"
 
@@ -20,5 +21,6 @@ func build() {
 		os.Exit(1)
 	}
 	repo := repositories.NewURL(conn)
-	_ = usecases.NewURL(repo, nil)
+	hash := usecases.NewHasher(sha512.New())
+	_ = usecases.NewURL(repo, hash)
 }
