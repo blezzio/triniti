@@ -1,0 +1,23 @@
+name: go-test
+on:
+  push:
+    branches:
+      - master
+      - dev
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: false
+      - name: Running go test
+        run: go test ./...
