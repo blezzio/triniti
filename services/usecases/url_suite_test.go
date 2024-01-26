@@ -54,7 +54,7 @@ func getURLTestSuite(param urlTestSuiteParam) urlTestSuite {
 
 	repo := mocks.NewUrlTestRepo(param.repoData, param.repoErr)
 	hash := mocks.NewURLTestHash()
-	uc := NewUrl(repo, hash, opts...)
+	uc := NewURL(repo, hash, opts...)
 
 	suite.repoCallLog = repo
 	suite.hashCallLog = hash
