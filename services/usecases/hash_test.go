@@ -24,7 +24,7 @@ func Test_ShortHash_Collision(t *testing.T) {
 	for {
 		str := randomString(rand.Intn(225))
 		sh := sh.Hash(str)
-		sha := sh.Next()
+		sha := sh.Get()
 		if v, ok := seen[sha]; ok && v != str {
 			t.Logf("SHA1 %s collided %s after %d with %s\n", str, v, i, sha)
 			break
@@ -42,7 +42,7 @@ func Test_ShortHash_Collision(t *testing.T) {
 	for {
 		str := randomString(rand.Intn(225))
 		sh := sh.Hash(str)
-		sha := sh.Next()
+		sha := sh.Get()
 		if v, ok := seen[sha]; ok && v != str {
 			t.Logf("SHA256 %s collided %s after %d with %s\n", str, v, i, sha)
 			break
@@ -60,7 +60,7 @@ func Test_ShortHash_Collision(t *testing.T) {
 	for {
 		str := randomString(rand.Intn(225))
 		sh := sh.Hash(str)
-		sha := sh.Next()
+		sha := sh.Get()
 		if v, ok := seen[sha]; ok && v != str {
 			t.Logf("SHA512 %s collided %s after %d with %s\n", str, v, i, sha)
 			break

@@ -15,7 +15,7 @@ func NewHasher(hasher hash.Hash) *Hasher {
 	return &Hasher{h: hasher}
 }
 
-func (uc *Hasher) Hash(val string) *dtos.Hash {
+func (uc *Hasher) Hash(val string) *dtos.HashGetter {
 	hash := base64.URLEncoding.EncodeToString(uc.h.Sum([]byte(val)))
-	return dtos.NewHash(hash)
+	return dtos.NewHashGetter(hash)
 }
