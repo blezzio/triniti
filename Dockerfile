@@ -5,6 +5,7 @@ WORKDIR /
 COPY ./data /src/data
 COPY ./handlers /src/handlers
 COPY ./infra /src/infra
+COPY ./middlewares /src/middlewares
 COPY ./services /src/services
 COPY ./utils /src/utils
 COPY ./main.go /src
