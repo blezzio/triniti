@@ -53,12 +53,9 @@ func (h *URL) getHash(w http.ResponseWriter, res *http.Request, url string) {
 	}
 }
 
-func (h *URL) fix(uri string) string {
+func (h *URL) fix(url string) string {
 	return strings.Replace(
-		strings.Replace(uri, "http:/", "http://", 1),
-		"https:/",
-		"https:/",
-		1,
+		url, ":/", "://", 1,
 	)
 }
 
