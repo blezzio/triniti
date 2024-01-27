@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
 	"math/rand"
@@ -19,7 +18,7 @@ func randomString(n int) string {
 
 func Test_ShortHash_Collision(t *testing.T) {
 	seen := make(map[string]string)
-	sh := NewHasher(sha1.New())
+	sh := NewHasher()
 	i := 0
 	for {
 		str := randomString(rand.Intn(225))
@@ -37,7 +36,7 @@ func Test_ShortHash_Collision(t *testing.T) {
 	}
 
 	seen = make(map[string]string)
-	sh = NewHasher(sha256.New())
+	sh = NewHasher(WithHash(sha256.New()))
 	i = 0
 	for {
 		str := randomString(rand.Intn(225))
@@ -55,7 +54,7 @@ func Test_ShortHash_Collision(t *testing.T) {
 	}
 
 	seen = make(map[string]string)
-	sh = NewHasher(sha512.New())
+	sh = NewHasher(WithHash(sha512.New()))
 	i = 0
 	for {
 		str := randomString(rand.Intn(225))

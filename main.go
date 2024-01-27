@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha1"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -45,8 +44,8 @@ func build() (server *infra.Server, teardown func()) {
 		os.Exit(1)
 	}
 	repo := repositories.NewURL(conn)
-	hash := usecases.NewHasher(sha1.New())
-	uc := usecases.NewURL(repo, hash)
+	hasher := usecases.NewHasher()
+	uc := usecases.NewURL(repo, hasher)
 	router := routers.NewURL(uc)
 
 	reql := middlewares.NewReqLogger()
