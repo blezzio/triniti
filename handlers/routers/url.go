@@ -46,7 +46,11 @@ func (h *URL) getHash(w http.ResponseWriter, res *http.Request, url string) {
 		}
 	}
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf("<h1>localhost:4444/%v<h1>", hash)))
+
+	resp := []byte(fmt.Sprintf("<h1>localhost:4444/%v<h1>", hash))
+	if _, err := w.Write(resp); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (h *URL) fix(uri string) string {
