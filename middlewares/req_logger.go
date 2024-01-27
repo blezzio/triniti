@@ -46,7 +46,7 @@ func (mw *ReqLogger) log(msg *reqlmsg) {
 			"uri", msg.uri,
 			"method", msg.method,
 			"status", msg.status,
-			"latency", fmt.Sprintf("%d ms", msg.latency.Milliseconds()),
+			"latency", fmt.Sprintf("%dms", msg.latency.Milliseconds()),
 		)
 	} else {
 		mw.logger.Info(
@@ -54,7 +54,7 @@ func (mw *ReqLogger) log(msg *reqlmsg) {
 			"uri", msg.uri,
 			"method", msg.method,
 			"status", msg.status,
-			"latency", fmt.Sprintf("%d ms", msg.latency.Milliseconds()),
+			"latency", fmt.Sprintf("%dms", msg.latency.Milliseconds()),
 		)
 	}
 }

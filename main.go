@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"crypto/sha512"
+	"crypto/sha1"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -45,15 +45,17 @@ func build() (server *infra.Server, teardown func()) {
 		os.Exit(1)
 	}
 	repo := repositories.NewURL(conn)
-	hash := usecases.NewHasher(sha512.New())
+	hash := usecases.NewHasher(sha1.New())
 	uc := usecases.NewURL(repo, hash)
 	router := routers.NewURL(uc)
 
 	reql := middlewares.NewReqLogger()
+	respcom := middlewares.NewRespCompressor()
 
 	server = infra.NewServer(
 		infra.WithRouter(router),
 		infra.WithMiddleware(reql),
+		infra.WithMiddleware(respcom),
 	)
 	teardown = func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
