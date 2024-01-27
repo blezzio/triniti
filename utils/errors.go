@@ -5,22 +5,13 @@ import (
 	"runtime"
 )
 
-type terr struct {
-	cause error
-	msg   string
-}
-
-func (err terr) Error() string {
-	return fmt.Sprintf("%s\ncaused by %v\n", err.msg, err.cause.Error())
-}
-
 func Trace(cause error, msg string, args ...any) error {
 	if cause == nil {
 		return nil
 	}
 
-	desc := fmt.Sprintf(msg, args...)
-	err := terr{
+	desc := fmt.Errorf(msg, args...)
+	err := TraceError{
 		cause: cause,
 		msg:   desc,
 	}
@@ -29,13 +20,13 @@ func Trace(cause error, msg string, args ...any) error {
 	if !ok {
 		return err
 	}
-	err.msg = fmt.Sprintf("error at line %d in file %s:\n\t%s", line, file, desc)
+	err.msg = fmt.Errorf("error at line %d in file %s:\n\t%w", line, file, desc)
 
 	f := runtime.FuncForPC(pc)
 	if f == nil {
 		return err
 	}
-	err.msg = fmt.Sprintf("error at line %d in file %s(%s):\n\t%s", line, file, f.Name(), desc)
+	err.msg = fmt.Errorf("error at line %d in file %s(%s):\n\t%w", line, file, f.Name(), desc)
 
 	return err
 }

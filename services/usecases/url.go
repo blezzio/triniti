@@ -30,7 +30,7 @@ func NewURL(
 func (uc *URL) GetHash(ctx context.Context, fullURL string) (string, error) {
 	hash, err := uc.createNewHash(ctx, fullURL)
 	if err := uc.setCache(ctx, hash, fullURL); err != nil {
-		uc.logger.WarnContext(ctx, "failed to set cache with key=%s and value=%s", hash, fullURL)
+		uc.logger.WarnContext(ctx, "failed to set cache", "key", hash, "value", fullURL, "error", err)
 	}
 	return hash, utils.Trace(err, "failed to get hash for url %s", fullURL)
 }
@@ -79,7 +79,7 @@ func (uc *URL) GetFullURL(ctx context.Context, hash string) (string, error) {
 	if cacheErr == nil {
 		return fullURL, nil
 	} else {
-		uc.logger.WarnContext(ctx, "failed to cache with key %q", hash)
+		uc.logger.WarnContext(ctx, "failed to get cache", "key", hash, "error", cacheErr)
 	}
 
 	fullURL, err := uc.repo.GetFullURL(ctx, hash)
@@ -87,11 +87,8 @@ func (uc *URL) GetFullURL(ctx context.Context, hash string) (string, error) {
 		return "", utils.Trace(err, "failed to get full url for hash %s", hash)
 	}
 
-	if cacheErr != nil {
-		if err := uc.setCache(ctx, hash, fullURL); err != nil {
-			uc.logger.WarnContext(ctx, "failed to set cache with key=%s and value=%s", hash, fullURL)
-		}
+	if err := uc.setCache(ctx, hash, fullURL); err != nil {
+		uc.logger.WarnContext(ctx, "failed to set cache", "key", hash, "value", fullURL, "error", err)
 	}
-
-	return hash, nil
+	return fullURL, nil
 }
