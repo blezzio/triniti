@@ -1,12 +1,14 @@
 package routers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/blezzio/triniti/handlers/interfaces"
+	"github.com/blezzio/triniti/utils"
 )
 
 type URL struct {
@@ -59,6 +61,10 @@ func (h *URL) fix(uri string) string {
 func (h *URL) getFullURL(w http.ResponseWriter, res *http.Request, hash string) {
 	url, err := h.service.GetFullURL(res.Context(), hash)
 	if err != nil {
+		if terr, ok := err.(utils.TraceError); ok && terr.Is(sql.ErrNoRows) {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
