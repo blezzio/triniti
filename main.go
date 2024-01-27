@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha512"
 	"log/slog"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,6 +12,7 @@ import (
 	"github.com/blezzio/triniti/data/repositories"
 	"github.com/blezzio/triniti/handlers/routers"
 	"github.com/blezzio/triniti/infra"
+	"github.com/blezzio/triniti/middlewares"
 	"github.com/blezzio/triniti/services/usecases"
 )
 
@@ -21,7 +21,6 @@ func main() {
 
 	serverErr := make(chan error, 1)
 	go func() {
-		slog.Info("server starting...", "address", server.Addr)
 		serverErr <- server.ListenAndServe()
 	}()
 
@@ -39,7 +38,7 @@ func main() {
 	slog.Info("teared down")
 }
 
-func build() (server *http.Server, teardown func()) {
+func build() (server *infra.Server, teardown func()) {
 	conn, err := infra.NewPostgresConn()
 	if err != nil {
 		slog.Error("failed to create db", "error", err)
@@ -50,7 +49,12 @@ func build() (server *http.Server, teardown func()) {
 	uc := usecases.NewURL(repo, hash)
 	router := routers.NewURL(uc)
 
-	server = infra.NewServer(infra.WithRouter(router))
+	reql := middlewares.NewReqLogger()
+
+	server = infra.NewServer(
+		infra.WithRouter(router),
+		infra.WithMiddleware(reql),
+	)
 	teardown = func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
