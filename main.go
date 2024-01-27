@@ -50,10 +50,12 @@ func build() (server *infra.Server, teardown func()) {
 	router := routers.NewURL(uc)
 
 	reql := middlewares.NewReqLogger()
+	respcom := middlewares.NewRespCompressor()
 
 	server = infra.NewServer(
 		infra.WithRouter(router),
 		infra.WithMiddleware(reql),
+		infra.WithMiddleware(respcom),
 	)
 	teardown = func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
