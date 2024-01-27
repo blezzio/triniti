@@ -1,20 +1,33 @@
 package usecases
 
 import (
+	"crypto/sha1"
 	"encoding/base64"
 	"hash"
 	"sync"
 
 	"github.com/blezzio/triniti/services/dtos"
+	"github.com/blezzio/triniti/services/interfaces"
 )
 
 type Hasher struct {
 	mux sync.Mutex
 	h   hash.Hash
+	e   interfaces.Encoding
 }
 
-func NewHasher(hasher hash.Hash) *Hasher {
-	return &Hasher{mux: sync.Mutex{}, h: hasher}
+func NewHasher(opts ...HashOpt) *Hasher {
+	def := &Hasher{
+		mux: sync.Mutex{},
+		h:   sha1.New(),
+		e:   base64.URLEncoding,
+	}
+
+	for _, opt := range opts {
+		opt(def)
+	}
+
+	return def
 }
 
 func (uc *Hasher) Hash(val string) *dtos.HashGetter {
@@ -23,7 +36,7 @@ func (uc *Hasher) Hash(val string) *dtos.HashGetter {
 	defer uc.h.Reset()
 
 	uc.h.Write([]byte(val))
-	hash := base64.URLEncoding.EncodeToString(uc.h.Sum(nil))
+	hash := uc.e.EncodeToString(uc.h.Sum(nil))
 
 	return dtos.NewHashGetter(hash)
 }
