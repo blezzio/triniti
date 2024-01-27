@@ -1,0 +1,1 @@
+ALTER TABLE "url_lookup" ADD CONSTRAINT "uq__url_look_up__url" UNIQUE ("url");
