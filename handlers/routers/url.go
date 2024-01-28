@@ -8,15 +8,17 @@ import (
 	"strings"
 
 	"github.com/blezzio/triniti/handlers/interfaces"
+	"github.com/blezzio/triniti/handlers/types"
 	"github.com/blezzio/triniti/utils"
 )
 
 type URL struct {
 	service interfaces.URLUseCase
+	index   interfaces.View
 }
 
-func NewURL(service interfaces.URLUseCase) *URL {
-	return &URL{service: service}
+func NewURL(service interfaces.URLUseCase, index interfaces.View) *URL {
+	return &URL{service: service, index: index}
 }
 
 func (h *URL) Route(serveMux *http.ServeMux) {
@@ -28,6 +30,11 @@ func (h *URL) handle(w http.ResponseWriter, res *http.Request) {
 	if uri[0] == '/' {
 		uri = uri[1:]
 	}
+	if len(uri) == 0 {
+		h.showIndexPage(w, res)
+		return
+	}
+
 	_, err := url.ParseRequestURI(uri)
 	if err != nil {
 		h.getFullURL(w, res, uri)
@@ -71,4 +78,15 @@ func (h *URL) getFullURL(w http.ResponseWriter, res *http.Request, hash string) 
 	}
 	w.Header().Add("Location", url)
 	w.WriteHeader(http.StatusMovedPermanently)
+}
+
+func (h *URL) showIndexPage(w http.ResponseWriter, res *http.Request) {
+	data := &types.HTMLIndexView{
+		AcceptLanguage: res.Header.Get("Accept-Language"),
+	}
+
+	if err := h.index.Exec(w, data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	h.index.AddHeaders(w)
 }
