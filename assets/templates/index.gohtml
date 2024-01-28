@@ -6,18 +6,22 @@
     <div class="hero min-h-screen bg-base-200">
         <div class="hero-content text-center">
             <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-                <form class="card-body">
+                <form class="card-body" hx-post="/" hx-target="#alert" hx-swap="outerHTML">
                     <div class="form-control">
-                        <label class="label" for="url_input">
+                        <label class="label" for="url-input">
                             <span class="label-text">{{.URLTrans}}</span>
                         </label>
-                        <input type="url" placeholder="{{.Placeholder}}" class="input input-bordered" id="url_input"
-                            required />
+                        <input type="url" placeholder="{{.Placeholder}}" class="input input-bordered" id="url-input"
+                            name="url" required />
                     </div>
-                    <div class="form-control mt-6">
-                        <button class="btn btn-outline">{{.Create}}</button>
+                    <div class="items-center htmx-indicator" role="progressbar">
+                        <span id="loading-bar" class="loading loading-bars loading-md"></span>
+                    </div>
+                    <div class="form-control mt-6 htmx-hider">
+                        <button class="btn btn-outline" hx-indicator="#loading-bar">{{.Create}}</button>
                     </div>
                 </form>
+                <div id="alert" style="display: none;"></div>
             </div>
             <div class="max-w-md">
                 <div class="avatar py-4">
@@ -28,10 +32,9 @@
                 <h1 class="text-5xl font-bold">{{.Greet}}</h1>
                 <p class="py-6"><span class="font-medium">{{.TrinitiURL}}</span> {{.Summary}}</p>
             </div>
-
         </div>
     </div>
-    /body>
+</body>
 
-    </html>
-    {{end}}
+</html>
+{{end}}

@@ -1,0 +1,27 @@
+{{define "SUCCESS_ALERT"}}
+<div id="alert" role="alert" class="alert shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <div>
+        <div class="text-xs">{{.Msg}}</div>
+        <h3 id="generated-url" class="font-bold">
+            {{.URL}}
+        </h3>
+    </div>
+    <div id="copy-tooltip" data-tip="hello">
+        <button class="btn-outline btn-sm" onclick="copyToClipboard()">{{.Copied}}</button>
+    </div>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("generated-url");
+            document.getElementById("copy-tooltip").classList.add("tooltip");
+            navigator.clipboard.writeText(copyText.innerHTML.trim());
+            setTimeout(function () {
+                document.getElementById("copy-tooltip").classList.remove("tooltip");
+            }, 1000);
+        } 
+    </script>
+</div>
+{{end}}
