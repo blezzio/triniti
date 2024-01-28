@@ -8,6 +8,8 @@ COPY ./infra /src/infra
 COPY ./middlewares /src/middlewares
 COPY ./services /src/services
 COPY ./utils /src/utils
+COPY ./assets /src/assets
+COPY ./presentation /src/presentation
 COPY ./main.go /src
 COPY  go.mod go.sum /src/
 
