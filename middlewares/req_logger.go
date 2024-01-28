@@ -40,15 +40,15 @@ func (mw *ReqLogger) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (mw *ReqLogger) log(msg *reqlmsg) {
-	latencyUnit := "ms"
-	latency := msg.latency.Milliseconds()
+	latencyUnit := "s"
+	latency := int64(msg.latency.Seconds())
+	if latency == 0 {
+		latencyUnit = "ms"
+		latency = msg.latency.Milliseconds()
+	}
 	if latency == 0 {
 		latencyUnit = "μs"
 		latency = msg.latency.Microseconds()
-	}
-	if latency == 0 {
-		latencyUnit = "ns"
-		latency = msg.latency.Nanoseconds()
 	}
 
 	if msg.status > 399 {

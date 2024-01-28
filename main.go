@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/blezzio/triniti/assets"
 	"github.com/blezzio/triniti/data/repositories"
 	"github.com/blezzio/triniti/handlers/routers"
 	"github.com/blezzio/triniti/infra"
@@ -15,7 +16,6 @@ import (
 	_ "github.com/blezzio/triniti/presentation/l10n"
 	"github.com/blezzio/triniti/presentation/views"
 	"github.com/blezzio/triniti/services/usecases"
-	"github.com/blezzio/triniti/assets"
 )
 
 func main() {
@@ -49,16 +49,20 @@ func build() (server *infra.Server, teardown func()) {
 	repo := repositories.NewURL(conn)
 	hasher := usecases.NewHasher()
 	uc := usecases.NewURL(repo, hasher)
-	indexView := views.NewIndex(templates.FS)
+	indexView := views.NewIndex(assets.FS)
 	router := routers.NewURL(uc, indexView)
 
 	reql := middlewares.NewReqLogger()
 	respcom := middlewares.NewRespCompressor()
+	static := middlewares.NewStatic(assets.FS, "static")
+	favico := middlewares.NewFavIco(assets.FS, "static")
 
 	server = infra.NewServer(
 		infra.WithRouter(router),
+		infra.WithMiddleware(static),
 		infra.WithMiddleware(reql),
 		infra.WithMiddleware(respcom),
+		infra.WithMiddleware(favico),
 	)
 	teardown = func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
