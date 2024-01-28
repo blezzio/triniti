@@ -7,3 +7,6 @@ build:
     GOOS=darwin GOARCH=amd64 go build -o bin/triniti-amd64-darwin main.go && \
     GOOS=linux GOARCH=386 go build -o bin/triniti-386-linux main.go && \
     GOOS=linux GOARCH=amd64 go build -o bin/triniti-amd64-linux main.go
+
+tailwind:
+    npx tailwindcss -i ./assets/templates/tailwind.css -o ./assets/static/tailwind.css --watch

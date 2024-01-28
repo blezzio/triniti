@@ -6,13 +6,14 @@ import (
 )
 
 type HeaderData struct {
-	Lang, Desc, Kw string
+	Lang, Desc, Kw, Title string
 }
 
 func NewHeaderData(printer *message.Printer) HeaderData {
 	return HeaderData{
-		Lang: printer.Sprintf(l10n.HeaderLang),
-		Desc: printer.Sprintf(l10n.HeaderDesc),
-		Kw:   printer.Sprintf(l10n.HeaderKeywords),
+		Lang:  printer.Sprintf(l10n.HeaderLang),
+		Desc:  printer.Sprintf(l10n.HeaderDesc),
+		Kw:    printer.Sprintf(l10n.HeaderKeywords),
+		Title: printer.Sprintf(l10n.HeaderTitle),
 	}
 }

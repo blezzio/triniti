@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 
 	"github.com/blezzio/triniti/handlers/types"
 	"github.com/blezzio/triniti/presentation/l10n"
@@ -57,10 +58,16 @@ func (t *Index) Exec(wr http.ResponseWriter, data any) error {
 
 	param := struct {
 		HeaderData
-		Text string
+		Greet, Summary, URLTrans, Placeholder, Create, ImgAlt, TrinitiURL string
 	}{
-		HeaderData: NewHeaderData(printer),
-		Text:       printer.Sprintf(l10n.IndexGreeting),
+		HeaderData:  NewHeaderData(printer),
+		Greet:       printer.Sprintf(l10n.IndexGreeting),
+		Summary:     printer.Sprintf(l10n.IndexSummary),
+		URLTrans:    printer.Sprintf(l10n.IndexURLTrans),
+		Placeholder: printer.Sprintf(l10n.IndexInputPlaceholder),
+		Create:      printer.Sprintf(l10n.IndexCreate),
+		ImgAlt:      printer.Sprintf(l10n.IndexImgAlt),
+		TrinitiURL:  os.Getenv("TRINITI_URL"),
 	}
 
 	err := t.templ.Execute(wr, param)
