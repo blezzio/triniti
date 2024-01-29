@@ -13,8 +13,9 @@ You will need these things to set up this project on a local machine.
 
 ### Optional
 
-- [TailwindCSS](https://tailwindcss.com/) is optional, and used to generate the CSS styling.
-- [NodeJS](https://nodejs.org/en) is required by TailwindCSS, so install it only if you are intending to use TailwindCSS.
+- [DaisyUI](https://daisyui.com/) is optional and used to create the UI, so install it only if you intend to modify it.
+- [TailwindCSS](https://tailwindcss.com/) is required by DaisyUI.
+- [NodeJS](https://nodejs.org/en) is required by TailwindCSS.
 - [GNU Make](https://www.gnu.org/software/make/) is optional, you can copy the command from the `Makefile` and run it.
 
 ## Setup Local Environment
@@ -48,6 +49,7 @@ $ curl localhost:4444/I6_V2m
 
 - [Go](https://go.dev/)
 - [TailwindCSS](https://tailwindcss.com/)
+- [DaisyUI](https://daisyui.com/)
 
 ## Deploy with
 
