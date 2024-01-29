@@ -40,6 +40,17 @@ func (mw *ReqLogger) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (mw *ReqLogger) log(msg *reqlmsg) {
+	latencyUnit := "s"
+	latency := int64(msg.latency.Seconds())
+	if latency == 0 {
+		latencyUnit = "ms"
+		latency = msg.latency.Milliseconds()
+	}
+	if latency == 0 {
+		latencyUnit = "μs"
+		latency = msg.latency.Microseconds()
+	}
+
 	if msg.status > 399 {
 		mw.logger.Error(
 			"request failed",
@@ -54,7 +65,7 @@ func (mw *ReqLogger) log(msg *reqlmsg) {
 			"uri", msg.uri,
 			"method", msg.method,
 			"status", msg.status,
-			"latency", fmt.Sprintf("%dms", msg.latency.Milliseconds()),
+			"latency", fmt.Sprintf("%d%s", latency, latencyUnit),
 		)
 	}
 }
