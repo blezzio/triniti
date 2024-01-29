@@ -79,12 +79,12 @@ func (h *URL) handleGet(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		h.getFullURL(w, req, uri)
 	} else {
+		uri = h.fix(uri)
 		h.getHash(w, req, uri)
 	}
 }
 
 func (h *URL) getHash(w http.ResponseWriter, req *http.Request, url string) {
-	url = h.fix(url)
 	hash, err := h.service.GetHash(req.Context(), url)
 	if err != nil {
 		if err != nil {
