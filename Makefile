@@ -9,4 +9,4 @@ build:
     GOOS=linux GOARCH=amd64 go build -o bin/triniti-amd64-linux main.go
 
 tailwind:
-    npx tailwindcss -i ./assets/templates/tailwind.css -o ./assets/static/tailwind.css --watch
+	npx tailwindcss -i ./assets/templates/tailwind.css -o ./assets/static/tailwind.css --watch
