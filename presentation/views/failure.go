@@ -66,10 +66,10 @@ func (t *Failure) Exec(wr http.ResponseWriter, data any) error {
 		Error:           validData.Error.Error(),
 	}
 
+	t.addHeaders(wr, validData.Code)
 	if err := t.templ.Execute(wr, param); err != nil {
 		return utils.Trace(err, "failed to execute template")
 	}
-	t.addHeaders(wr, validData.Code)
 	return nil
 }
 

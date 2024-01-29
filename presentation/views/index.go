@@ -70,10 +70,10 @@ func (t *Index) Exec(wr http.ResponseWriter, data any) error {
 		TrinitiURL:  os.Getenv("TRINITI_URL"),
 	}
 
+	t.addHeaders(wr)
 	if err := t.templ.Execute(wr, param); err != nil {
 		return utils.Trace(err, "failed to execute template")
 	}
-	t.addHeaders(wr)
 	return nil
 }
 
