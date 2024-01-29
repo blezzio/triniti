@@ -67,10 +67,13 @@ func (t *Success) Exec(wr http.ResponseWriter, data any) error {
 		Copy:              printer.Sprintf(l10n.SuccessCopy),
 	}
 
-	err := t.templ.Execute(wr, param)
-	return utils.Trace(err, "failed to execute template")
+	if err := t.templ.Execute(wr, param); err != nil {
+		return utils.Trace(err, "failed to execute template")
+	}
+	t.addHeaders(wr)
+	return nil
 }
 
-func (t *Success) AddHeaders(wr http.ResponseWriter) {
+func (t *Success) addHeaders(wr http.ResponseWriter) {
 	wr.Header().Add("Content-Type", "text/html")
 }

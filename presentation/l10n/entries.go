@@ -47,5 +47,14 @@ func getEntries() []entry {
 
 		{language.English, SuccessCopied, "Copied"},
 		{language.Vietnamese, SuccessCopied, "Đã sao chép"},
+
+		{language.English, ErrOopsie, "%d Oopsies!"},
+		{language.Vietnamese, ErrOopsie, "Kiếp nạn thứ %d!"},
+
+		{language.English, ErrAnErrorOccurred, "We have met an unexpected error, calm down and try again later!"},
+		{language.Vietnamese, ErrAnErrorOccurred, "Chúng tôi đã gặp phải một lỗi không mong muốn, hãy giữ bình tĩnh và thử lại sau!"},
+
+		{language.English, ErrTrace, "Trace"},
+		{language.Vietnamese, ErrTrace, "Manh mối"},
 	}
 }

@@ -52,12 +52,13 @@ func build() (server *infra.Server, teardown func()) {
 
 	indexView := views.NewIndex(assets.FS)
 	successView := views.NewSucccess(assets.FS)
+	failureView := views.NewFailure(assets.FS)
 
 	handler := handlers.NewURL(
 		uc,
 		handlers.WithView(indexView, handlers.IndexView),
 		handlers.WithView(successView, handlers.SuccessView),
-		handlers.WithView(indexView, handlers.ErrorView),
+		handlers.WithView(failureView, handlers.FailureView),
 	)
 
 	reql := middlewares.NewReqLogger()

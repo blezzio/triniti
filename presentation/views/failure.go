@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
 
 	"github.com/blezzio/triniti/apis/types"
 	"github.com/blezzio/triniti/presentation/l10n"
@@ -14,14 +13,14 @@ import (
 	"golang.org/x/text/message"
 )
 
-type Index struct {
+type Failure struct {
 	printers   map[language.Tag]*message.Printer
 	defPrinter *message.Printer
 	templ      *template.Template
 }
 
-func NewIndex(fs embed.FS) *Index {
-	templ := template.Must(template.New(indexTemplName).ParseFS(fs, indexTemplFN...))
+func NewFailure(fs embed.FS) *Failure {
+	templ := template.Must(template.New(failureTemplName).ParseFS(fs, failureTemplFN...))
 	prts := make(map[language.Tag]*message.Printer)
 	var defprt *message.Printer
 	first := true
@@ -33,17 +32,17 @@ func NewIndex(fs embed.FS) *Index {
 		}
 	}
 
-	return &Index{
+	return &Failure{
 		printers:   prts,
 		defPrinter: defprt,
 		templ:      templ,
 	}
 }
 
-func (t *Index) Exec(wr http.ResponseWriter, data any) error {
-	validData, ok := data.(*types.HTMLIndexView)
+func (t *Failure) Exec(wr http.ResponseWriter, data any) error {
+	validData, ok := data.(*types.HTMLErrorView)
 	if !ok {
-		return utils.Trace(fmt.Errorf("expected type %T got %T", &types.HTMLIndexView{}, data), "failed to parse data type")
+		return utils.Trace(fmt.Errorf("expected type %T got %T", &types.HTMLErrorView{}, data), "failed to parse data type")
 	}
 
 	lang := language.English
@@ -58,25 +57,23 @@ func (t *Index) Exec(wr http.ResponseWriter, data any) error {
 
 	param := struct {
 		HeaderData
-		Greet, Summary, URLTrans, Placeholder, Create, ImgAlt, TrinitiURL string
+		Oopsie, AnErrorOccurred, Trace, Error string
 	}{
-		HeaderData:  NewHeaderData(printer),
-		Greet:       printer.Sprintf(l10n.IndexGreeting),
-		Summary:     printer.Sprintf(l10n.IndexSummary),
-		URLTrans:    printer.Sprintf(l10n.IndexURLTrans),
-		Placeholder: printer.Sprintf(l10n.IndexInputPlaceholder),
-		Create:      printer.Sprintf(l10n.IndexCreate),
-		ImgAlt:      printer.Sprintf(l10n.IndexImgAlt),
-		TrinitiURL:  os.Getenv("TRINITI_URL"),
+		HeaderData:      NewHeaderData(printer),
+		Oopsie:          printer.Sprintf(l10n.ErrOopsie, validData.Code),
+		AnErrorOccurred: printer.Sprintf(l10n.ErrAnErrorOccurred),
+		Trace:           printer.Sprintf(l10n.ErrTrace),
+		Error:           validData.Error.Error(),
 	}
 
 	if err := t.templ.Execute(wr, param); err != nil {
 		return utils.Trace(err, "failed to execute template")
 	}
-	t.addHeaders(wr)
+	t.addHeaders(wr, validData.Code)
 	return nil
 }
 
-func (t *Index) addHeaders(wr http.ResponseWriter) {
+func (t *Failure) addHeaders(wr http.ResponseWriter, code int) {
 	wr.Header().Add("Content-Type", "text/html")
+	wr.WriteHeader(code)
 }

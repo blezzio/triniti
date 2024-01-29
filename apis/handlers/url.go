@@ -18,7 +18,7 @@ type ViewName string
 const (
 	IndexView   ViewName = "INDEX"
 	SuccessView ViewName = "SUCCESS"
-	ErrorView   ViewName = "ERROR"
+	FailureView ViewName = "FAILURE"
 )
 
 type URL struct {
@@ -50,7 +50,7 @@ func (h *URL) handle(w http.ResponseWriter, req *http.Request) {
 		h.handlePost(w, req)
 	default:
 		w.Header().Add("Allow", fmt.Sprintf("%v, %v", http.MethodGet, http.MethodPost))
-		http.Error(w, fmt.Sprintf("%v method is not allowed", req.Method), http.StatusMethodNotAllowed)
+		h.showErrorPage(w, req, http.StatusMethodNotAllowed, fmt.Errorf("%v method is not allowed", req.Method))
 		return
 	}
 }
@@ -59,7 +59,7 @@ func (h *URL) handlePost(w http.ResponseWriter, req *http.Request) {
 	formURL := req.FormValue("url")
 	_, err := url.ParseRequestURI(formURL)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.showErrorPage(w, req, http.StatusBadRequest, err)
 	} else {
 		h.getHash(w, req, formURL)
 	}
@@ -88,7 +88,7 @@ func (h *URL) getHash(w http.ResponseWriter, req *http.Request, url string) {
 	hash, err := h.service.GetHash(req.Context(), url)
 	if err != nil {
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			h.showErrorPage(w, req, http.StatusInternalServerError, err)
 			return
 		}
 	}
@@ -99,7 +99,7 @@ func (h *URL) getHash(w http.ResponseWriter, req *http.Request, url string) {
 	successView, ok := h.views[SuccessView]
 	if !ok {
 		if _, err := w.Write([]byte(shortenedURL)); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			h.showErrorPage(w, req, http.StatusInternalServerError, fmt.Errorf("no %s view", SuccessView))
 		}
 		return
 	}
@@ -107,10 +107,9 @@ func (h *URL) getHash(w http.ResponseWriter, req *http.Request, url string) {
 		AcceptLanguage: req.Header.Get("Accept-Language"),
 		URL:            shortenedURL,
 	}); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.showErrorPage(w, req, http.StatusInternalServerError, err)
 		return
 	}
-	successView.AddHeaders(w)
 }
 
 func (h *URL) fix(url string) string {
@@ -123,10 +122,10 @@ func (h *URL) getFullURL(w http.ResponseWriter, req *http.Request, hash string) 
 	url, err := h.service.GetFullURL(req.Context(), hash)
 	if err != nil {
 		if terr, ok := err.(utils.TraceError); ok && terr.Is(sql.ErrNoRows) {
-			http.Error(w, err.Error(), http.StatusNotFound)
+			h.showErrorPage(w, req, http.StatusNotFound, err)
 			return
 		}
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.showErrorPage(w, req, http.StatusInternalServerError, err)
 		return
 	}
 	w.Header().Add("Location", url)
@@ -140,13 +139,37 @@ func (h *URL) showIndexPage(w http.ResponseWriter, req *http.Request) {
 
 	index, ok := h.views[IndexView]
 	if !ok {
-		http.Error(w, "no INDEX view", http.StatusInternalServerError)
+		h.showErrorPage(w, req, http.StatusInternalServerError, fmt.Errorf("no %s view", IndexView))
 		return
 	}
 
 	if err := index.Exec(w, data); err != nil {
+		h.showErrorPage(w, req, http.StatusInternalServerError, err)
+		return
+	}
+}
+
+func (h *URL) showErrorPage(w http.ResponseWriter, req *http.Request, code int, err error) {
+	data := &types.HTMLErrorView{
+		AcceptLanguage: req.Header.Get("Accept-Language"),
+		Code:           code,
+		Error:          err,
+	}
+
+	errView, ok := h.views[FailureView]
+	if !ok {
+		http.Error(
+			w,
+			utils.Trace(
+				fmt.Errorf("no %s view", FailureView), "also previous error %w", err,
+			).Error(),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	if err := errView.Exec(w, data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	index.AddHeaders(w)
 }

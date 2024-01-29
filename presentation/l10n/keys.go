@@ -15,4 +15,7 @@ const (
 	SuccessClickButtonToCopy string = "success_click_button_to_copy"
 	SuccessCopied            string = "success_copied"
 	SuccessCopy              string = "success_copy"
+	ErrOopsie                string = "error_oopsie"
+	ErrAnErrorOccurred       string = "error_occurred"
+	ErrTrace                 string = "error_trace"
 )
