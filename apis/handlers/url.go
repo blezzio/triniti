@@ -1,27 +1,44 @@
-package routers
+package handlers
 
 import (
 	"database/sql"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
-	"github.com/blezzio/triniti/handlers/interfaces"
-	"github.com/blezzio/triniti/handlers/types"
+	"github.com/blezzio/triniti/apis/interfaces"
+	"github.com/blezzio/triniti/apis/types"
 	"github.com/blezzio/triniti/utils"
+)
+
+type ViewName string
+
+const (
+	IndexView   ViewName = "INDEX"
+	SuccessView ViewName = "SUCCESS"
+	ErrorView   ViewName = "ERROR"
 )
 
 type URL struct {
 	service interfaces.URLUseCase
-	index   interfaces.View
+	views   map[ViewName]interfaces.View
 }
 
-func NewURL(service interfaces.URLUseCase, index interfaces.View) *URL {
-	return &URL{service: service, index: index}
+func NewURL(
+	service interfaces.URLUseCase, opts ...UrlOpt,
+) *URL {
+	u := &URL{service: service, views: map[ViewName]interfaces.View{}}
+
+	for _, opt := range opts {
+		opt(u)
+	}
+
+	return u
 }
 
-func (h *URL) Route(serveMux *http.ServeMux) {
+func (h *URL) Build(serveMux *http.ServeMux) {
 	serveMux.HandleFunc("/", h.handle)
 }
 
@@ -39,6 +56,13 @@ func (h *URL) handle(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h *URL) handlePost(w http.ResponseWriter, req *http.Request) {
+	formURL := req.FormValue("url")
+	_, err := url.ParseRequestURI(formURL)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		h.getHash(w, req, formURL)
+	}
 }
 
 func (h *URL) handleGet(w http.ResponseWriter, req *http.Request) {
@@ -70,10 +94,23 @@ func (h *URL) getHash(w http.ResponseWriter, req *http.Request, url string) {
 	}
 	w.WriteHeader(http.StatusCreated)
 
-	resp := []byte(fmt.Sprintf("<h1>localhost:4444/%v<h1>", hash))
-	if _, err := w.Write(resp); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	shortenedURL := fmt.Sprintf("%s/%v", strings.ToLower(os.Getenv("TRINITI_URL")), hash)
+
+	successView, ok := h.views[SuccessView]
+	if !ok {
+		if _, err := w.Write([]byte(shortenedURL)); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
 	}
+	if err := successView.Exec(w, &types.HTMLSuccessView{
+		AcceptLanguage: req.Header.Get("Accept-Language"),
+		URL:            shortenedURL,
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	successView.AddHeaders(w)
 }
 
 func (h *URL) fix(url string) string {
@@ -101,8 +138,15 @@ func (h *URL) showIndexPage(w http.ResponseWriter, req *http.Request) {
 		AcceptLanguage: req.Header.Get("Accept-Language"),
 	}
 
-	if err := h.index.Exec(w, data); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	index, ok := h.views[IndexView]
+	if !ok {
+		http.Error(w, "no INDEX view", http.StatusInternalServerError)
+		return
 	}
-	h.index.AddHeaders(w)
+
+	if err := index.Exec(w, data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	index.AddHeaders(w)
 }

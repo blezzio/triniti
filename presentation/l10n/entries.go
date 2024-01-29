@@ -35,5 +35,17 @@ func getEntries() []entry {
 
 		{language.English, IndexImgAlt, "Three iris flowers surrounded by bubblesThree iris flowers surrounded by bubbles on the night background, painted in Van Gogh style."},
 		{language.Vietnamese, IndexImgAlt, "Ba bông hoa diên vĩ được bao quanh bởi bong bóng trên nền đêm, được vẽ theo phong cách Van Gogh."},
+
+		{language.English, SuccessShortened, "Shortened!"},
+		{language.Vietnamese, SuccessShortened, "Xong!"},
+
+		{language.English, SuccessClickButtonToCopy, "Click the button below to copy the shortened URL to clipboard."},
+		{language.Vietnamese, SuccessClickButtonToCopy, "Nhấn nút bên dưới để sao chép đường dẫn đã rút gọn vào bảng ghi tạm."},
+
+		{language.English, SuccessCopy, "Copy"},
+		{language.Vietnamese, SuccessCopy, "Sao chép"},
+
+		{language.English, SuccessCopied, "Copied"},
+		{language.Vietnamese, SuccessCopied, "Đã sao chép"},
 	}
 }

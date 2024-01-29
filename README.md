@@ -48,7 +48,6 @@ $ curl localhost:4444/I6_V2m
 
 - [Go](https://go.dev/)
 - [TailwindCSS](https://tailwindcss.com/)
-- [HTMX](https://htmx.org/)
 
 ## Deploy with
 

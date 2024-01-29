@@ -1,31 +1,19 @@
-.htmx-indicator {
+#loading-bar {
     display: none;
     opacity: 0;
-    transition: opacity 10ms ease-in;
+    transition: opacity 0ms ease-in;
 }
 
-.htmx-request .htmx-indicator {
-    display: block;
-    opacity: 1
-}
-
-.htmx-request.htmx-indicator {
-    display: block;
-    opacity: 1
-}
-
-.htmx-hider {
+#loading-bar.show {
     display: block;
     opacity: 1;
-    transition: opacity 10ms ease-out;
 }
 
-.htmx-request .htmx-hider {
-    display: none;
-    opacity: 0
+#submit-button {
+    transition: opacity 0ms ease-out;
 }
 
-.htmx-request.htmx-hider {
+#submit-button.hide {
     display: none;
-    opacity: 0
+    opacity: 0;
 }

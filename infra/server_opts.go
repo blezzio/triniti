@@ -4,15 +4,15 @@ import (
 	"net/http"
 )
 
-type router interface {
-	Route(*http.ServeMux)
+type handler interface {
+	Build(*http.ServeMux)
 }
 
 type ServerOpt func(*Server)
 
-func WithRouter(r router) ServerOpt {
+func WithHandler(r handler) ServerOpt {
 	return func(s *Server) {
-		r.Route(s.serveMux)
+		r.Build(s.serveMux)
 	}
 }
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
 
 	"github.com/blezzio/triniti/apis/types"
 	"github.com/blezzio/triniti/presentation/l10n"
@@ -14,14 +13,14 @@ import (
 	"golang.org/x/text/message"
 )
 
-type Index struct {
+type Success struct {
 	printers   map[language.Tag]*message.Printer
 	defPrinter *message.Printer
 	templ      *template.Template
 }
 
-func NewIndex(fs embed.FS) *Index {
-	templ := template.Must(template.New(indexTemplName).ParseFS(fs, indexTemplFN...))
+func NewSucccess(fs embed.FS) *Success {
+	templ := template.Must(template.New(successTemplName).ParseFS(fs, successTemplFN...))
 	prts := make(map[language.Tag]*message.Printer)
 	var defprt *message.Printer
 	first := true
@@ -33,17 +32,17 @@ func NewIndex(fs embed.FS) *Index {
 		}
 	}
 
-	return &Index{
+	return &Success{
 		printers:   prts,
 		defPrinter: defprt,
 		templ:      templ,
 	}
 }
 
-func (t *Index) Exec(wr http.ResponseWriter, data any) error {
-	validData, ok := data.(*types.HTMLIndexView)
+func (t *Success) Exec(wr http.ResponseWriter, data any) error {
+	validData, ok := data.(*types.HTMLSuccessView)
 	if !ok {
-		return utils.Trace(fmt.Errorf("expected type %T got %T", &types.HTMLIndexView{}, data), "failed to parse data type")
+		return utils.Trace(fmt.Errorf("expected type %T got %T", &types.HTMLSuccessView{}, data), "failed to parse data type")
 	}
 
 	lang := language.English
@@ -58,22 +57,20 @@ func (t *Index) Exec(wr http.ResponseWriter, data any) error {
 
 	param := struct {
 		HeaderData
-		Greet, Summary, URLTrans, Placeholder, Create, ImgAlt, TrinitiURL string
+		URL, Shortened, ClickButtonToCopy, Copied, Copy string
 	}{
-		HeaderData:  NewHeaderData(printer),
-		Greet:       printer.Sprintf(l10n.IndexGreeting),
-		Summary:     printer.Sprintf(l10n.IndexSummary),
-		URLTrans:    printer.Sprintf(l10n.IndexURLTrans),
-		Placeholder: printer.Sprintf(l10n.IndexInputPlaceholder),
-		Create:      printer.Sprintf(l10n.IndexCreate),
-		ImgAlt:      printer.Sprintf(l10n.IndexImgAlt),
-		TrinitiURL:  os.Getenv("TRINITI_URL"),
+		HeaderData:        NewHeaderData(printer),
+		URL:               validData.URL,
+		Shortened:         printer.Sprintf(l10n.SuccessShortened),
+		ClickButtonToCopy: printer.Sprintf(l10n.SuccessClickButtonToCopy),
+		Copied:            printer.Sprintf(l10n.SuccessCopied),
+		Copy:              printer.Sprintf(l10n.SuccessCopy),
 	}
 
 	err := t.templ.Execute(wr, param)
 	return utils.Trace(err, "failed to execute template")
 }
 
-func (t *Index) AddHeaders(wr http.ResponseWriter) {
+func (t *Success) AddHeaders(wr http.ResponseWriter) {
 	wr.Header().Add("Content-Type", "text/html")
 }

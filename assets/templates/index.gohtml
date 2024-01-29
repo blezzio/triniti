@@ -6,7 +6,7 @@
     <div class="hero min-h-screen bg-base-200">
         <div class="hero-content text-center">
             <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-                <form class="card-body" hx-post="/" hx-target="#alert" hx-swap="outerHTML">
+                <form class="card-body" method="post">
                     <div class="form-control">
                         <label class="label" for="url-input">
                             <span class="label-text">{{.URLTrans}}</span>
@@ -14,14 +14,13 @@
                         <input type="url" placeholder="{{.Placeholder}}" class="input input-bordered" id="url-input"
                             name="url" required />
                     </div>
-                    <div class="items-center htmx-indicator" role="progressbar">
-                        <span id="loading-bar" class="loading loading-bars loading-md"></span>
+                    <div id="loading-bar" class="items-center">
+                        <span class="loading loading-bars loading-md"></span>
                     </div>
-                    <div class="form-control mt-6 htmx-hider">
-                        <button class="btn btn-outline" hx-indicator="#loading-bar">{{.Create}}</button>
+                    <div id="submit-button" class="form-control mt-6" onclick="showLoading()">
+                        <button class="btn btn-outline">{{.Create}}</button>
                     </div>
                 </form>
-                <div id="alert" style="display: none;"></div>
             </div>
             <div class="max-w-md">
                 <div class="avatar py-4">
@@ -34,6 +33,14 @@
             </div>
         </div>
     </div>
+    <script>
+        function showLoading() {
+            var submitButton = document.getElementById("submit-button");
+            submitButton.classList.add("hide")
+            var loadingBar = document.getElementById("loading-bar");
+            loadingBar.classList.add("show")
+        } 
+    </script>
 </body>
 
 </html>
