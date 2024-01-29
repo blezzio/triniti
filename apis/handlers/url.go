@@ -158,12 +158,9 @@ func (h *URL) showErrorPage(w http.ResponseWriter, req *http.Request, code int, 
 
 	errView, ok := h.views[FailureView]
 	if !ok {
+		err := utils.Trace(fmt.Errorf("no %s view", FailureView), "also previous error %w", err)
 		http.Error(
-			w,
-			utils.Trace(
-				fmt.Errorf("no %s view", FailureView), "also previous error %w", err,
-			).Error(),
-			http.StatusInternalServerError,
+			w, err.Error(), http.StatusInternalServerError,
 		)
 		return
 	}

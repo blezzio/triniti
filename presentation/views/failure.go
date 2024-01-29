@@ -9,6 +9,7 @@ import (
 	"github.com/blezzio/triniti/apis/types"
 	"github.com/blezzio/triniti/presentation/l10n"
 	"github.com/blezzio/triniti/utils"
+	"github.com/getsentry/sentry-go"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -42,7 +43,9 @@ func NewFailure(fs embed.FS) *Failure {
 func (t *Failure) Exec(wr http.ResponseWriter, data any) error {
 	validData, ok := data.(*types.HTMLErrorView)
 	if !ok {
-		return utils.Trace(fmt.Errorf("expected type %T got %T", &types.HTMLErrorView{}, data), "failed to parse data type")
+		err := utils.Trace(fmt.Errorf("expected type %T got %T", &types.HTMLErrorView{}, data), "failed to parse data type")
+		sentry.CaptureException(err)
+		return err
 	}
 
 	lang := language.English
@@ -66,9 +69,12 @@ func (t *Failure) Exec(wr http.ResponseWriter, data any) error {
 		Error:           validData.Error.Error(),
 	}
 
+	sentry.CaptureException(validData.Error)
 	t.addHeaders(wr, validData.Code)
 	if err := t.templ.Execute(wr, param); err != nil {
-		return utils.Trace(err, "failed to execute template")
+		terr := utils.Trace(err, "failed to execute template")
+		sentry.CaptureException(terr)
+		return terr
 	}
 	return nil
 }
