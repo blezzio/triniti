@@ -2,16 +2,7 @@ FROM golang:1.21-alpine3.19
 
 WORKDIR /
 
-COPY ./data /src/data
-COPY ./handlers /src/handlers
-COPY ./infra /src/infra
-COPY ./middlewares /src/middlewares
-COPY ./services /src/services
-COPY ./utils /src/utils
-COPY ./assets /src/assets
-COPY ./presentation /src/presentation
-COPY ./main.go /src
-COPY  go.mod go.sum /src/
+COPY . /src/
 
 WORKDIR /src
 RUN go mod download
