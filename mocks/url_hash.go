@@ -1,4 +1,3 @@
-// go:build mocks
 package mocks
 
 import "github.com/blezzio/triniti/services/dtos"

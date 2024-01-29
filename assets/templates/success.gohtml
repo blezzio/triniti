@@ -1,0 +1,30 @@
+{{define "SUCCESS"}}
+<!DOCTYPE html>
+{{template "HEADER" .HeaderData}}
+
+<body>
+    <div class="hero min-h-screen bg-base-200">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-5xl font-bold">{{.Shortened}}<span class="sr-only"> {{.ClickButtonToCopy}}</span></h1>
+                <p id="generated-url" class="py-6">{{.URL}}</p>
+                <div id="copy-tooltip" data-tip="{{.Copied}}">
+                    <button id="copy-button" class="btn btn-outline" onclick="copyToClipboard()">{{.Copy}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("generated-url");
+            document.getElementById("copy-tooltip").classList.add("tooltip");
+            navigator.clipboard.writeText(copyText.innerHTML.trim());
+            setTimeout(function () {
+                document.getElementById("copy-tooltip").classList.remove("tooltip");
+            }, 1000);
+        } 
+    </script>
+</body>
+
+</html>
+{{end}}
